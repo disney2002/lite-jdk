@@ -1,0 +1,41 @@
+FROM alpine:latest
+
+CMD ["/bin/sh"]
+
+ENV TZ=Asia/Shanghai
+
+WORKDIR /app
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+
+RUN apk update && apk upgrade
+
+RUN  apk update \
+  && apk upgrade \
+  && apk add --update openjdk11 tzdata curl unzip bash git maven \
+  && rm -rf /var/cache/apk/*
+
+ENV LANG=zh_CN.UTF-8
+ENV LANGUAGE=zh_CN.UTF-8
+
+RUN git clone https://github.com/disney2002/lite-jdk.git
+
+RUN mkdir -p /root/.m2 && \
+    echo "<settings xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd'>" > /root/.m2/settings.xml && \
+    echo "  <mirrors>" >> /root/.m2/settings.xml && \
+    echo "    <mirror>" >> /root/.m2/settings.xml && \
+    echo "      <id>aliyunmaven</id>" >> /root/.m2/settings.xml && \
+    echo "      <mirrorOf>*</mirrorOf>" >> /root/.m2/settings.xml && \
+    echo "      <name>阿里云公共仓库</name>" >> /root/.m2/settings.xml && \
+    echo "      <url>http://maven.aliyun.com/nexus/content/groups/public</url>" >> /root/.m2/settings.xml && \
+    echo "    </mirror>" >> /root/.m2/settings.xml && \
+    echo "    <mirror>" >> /root/.m2/settings.xml && \
+    echo "      <id>huaweicloud</id>" >> /root/.m2/settings.xml && \
+    echo "      <mirrorOf>*</mirrorOf>" >> /root/.m2/settings.xml && \
+    echo "      <name>华为云公共仓库</name>" >> /root/.m2/settings.xml && \
+    echo "      <url>https://mirrors.huaweicloud.com/repository/maven/</url>" >> /root/.m2/settings.xml && \
+    echo "    </mirror>" >> /root/.m2/settings.xml && \
+    echo "  </mirrors>" >> /root/.m2/settings.xml && \
+    echo "</settings>" >> /root/.m2/settings.xml
+  
+RUN cd lite-jdk && mvn package 

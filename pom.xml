@@ -19,7 +19,7 @@
             java.base,jdk.jcmd,java.security.jgss,jdk.crypto.ec,java.logging,
             java.net.http,java.management,java.naming,java.sql,java.sql.rowset,
             java.xml,jdk.unsupported,jdk.management,jdk.jfr,
-            java.instrument,java.xml.bind
+            java.instrument,java.xml.bind,jdk.charsets,jdk.localedata
         </jdk.modules>
     </properties>
 

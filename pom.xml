@@ -1,99 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.example</groupId>
-	<artifactId>lite-jdk</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>lite-jdk</name>
-	<description>Generate a lite jdk</description>
-	<properties>
-		<java.version>11</java.version>
-	</properties>
-	<dependencies>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>lite-jdk</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>lite-jdk</name>
+    <description>Generate a lite jdk runtime</description>
 
-	</dependencies>
-<repositories>
-        <repository>
-            <id>aliyun</id>
-            <name>aliyun Repository</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>huaweicloud</id>
-            <name>huaweicloud Repository</name>
-            <url>https://mirrors.huaweicloud.com/repository/maven/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-	<build>
-		<extensions>
-			<extension>
-				<groupId>kr.motd.maven</groupId>
-				<artifactId>os-maven-plugin</artifactId>
-				<version>1.7.1</version>
-			</extension>
-		</extensions>
-		<plugins>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>3.0.0</version>
-				<executions>
-					<execution>
-						<id>lite-jdk</id>
-						<phase>package</phase>
-						<configuration>
-							<target>
-								<link compress="2" includeHeaders="false" modulepath="${java.home}/jmods" includeManPages="false" debug="false" destDir="${project.build.directory}/lite-jdk">
-									<module name="java.base"/>
-									<module name="jdk.jcmd"/>
-									<module name="java.security.jgss"/>
-									<module name="java.compiler"/>
-									<module name="jdk.crypto.ec"/>
-									<module name="java.desktop"/>
-									<module name="java.logging"/>
-									<module name="java.net.http"/>
-									<module name="java.management"/>
-									<module name="java.naming"/>
-									<module name="java.sql"/>
-									<module name="java.sql.rowset"/>
-									<module name="java.xml"/>
-									<module name="jdk.compiler"/>
-									<module name="jdk.unsupported"/>
-									<module name="jdk.management"/>
-									<module name="jdk.jfr"/>
+    <properties>
+        <java.version>11</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
 
-								</link>
-								<tar compression="gzip" longfile="gnu" destfile="${project.build.directory}/lite-jdk-${java.version}-${os.detected.classifier}.tgz">
-									<tarfileset dir="${project.build.directory}/lite-jdk/" filemode="755">
-										<include name="bin/*"/>
-									</tarfileset>
-									<tarfileset dir="${project.build.directory}/lite-jdk/">
-										<exclude name="bin/*"/>
-									</tarfileset>
-								</tar>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.ant</groupId>
-						<artifactId>ant</artifactId>
-						<version>1.10.12</version>
-					</dependency>
-				</dependencies>
-			</plugin>
+        <jdk.modules>
+            java.base,jdk.jcmd,java.security.jgss,jdk.crypto.ec,java.logging,
+            java.net.http,java.management,java.naming,java.sql,java.sql.rowset,
+            java.xml,jdk.unsupported,jdk.management,jdk.jfr,
+            java.instrument,java.xml.bind
+        </jdk.modules>
+    </properties>
 
-		</plugins>
-	</build>
+    <dependencies></dependencies>
+    
+    <repositories>
+        </repositories>
 
+    <build>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.7.1</version>
+            </extension>
+        </extensions>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jlink-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>lite-jdk</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jlink</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lite-jdk</outputDirectory>
+                            <addModules>
+                                <addModule>${jdk.modules}</addModule>
+                            </addModules>
+                            <stripDebug>true</stripDebug> <noHeaderFiles>true</noHeaderFiles> <noManPages>true</noManPages> <compress>2</compress> </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.7.1</version>
+                <executions>
+                    <execution>
+                        <id>create-archive</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>lite-jdk-${java.version}-${os.detected.classifier}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>src/main/assembly/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -67,7 +67,6 @@
 									<module name="jdk.management"/>
 									<module name="jdk.jfr"/>
 									<module name="java.instrument"/>
-									<module name="java.xml.bind"/>
 									<module name="jdk.charsets"/>
 									<module name="jdk.localedata"/>
 								</link>

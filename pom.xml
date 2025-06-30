@@ -70,7 +70,6 @@
 									<module name="jdk.management"/>
 									<module name="jdk.jfr"/>
 									<module name="java.instrument"/>
-									<module name="jdk.fonts"/>
 								</link>
 								<tar compression="gzip" longfile="gnu" destfile="${project.build.directory}/lite-jdk-${java.version}-${os.detected.classifier}.tgz">
 									<tarfileset dir="${project.build.directory}/lite-jdk/" filemode="755">

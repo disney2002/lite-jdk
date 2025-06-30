@@ -71,6 +71,7 @@
 									<module name="jdk.jfr"/>
 									<module name="java.instrument"/>
 									<module name="jdk.charsets"/>
+									<module name="jdk.localedata"/>
 									<module name="jdk.zipfs"/>
 								</link>
 								<tar compression="gzip" longfile="gnu" destfile="${project.build.directory}/lite-jdk-${java.version}-${os.detected.classifier}.tgz">
